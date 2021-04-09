@@ -9,7 +9,7 @@ import handlers
 
 async def on_startup(dispatcher):
     # Подключиться к базе данных
-    await database.connect()
+    # await database.connect()
 
     # Уведомить администратора о запуске бота
     await on_startup_notify(dispatcher)

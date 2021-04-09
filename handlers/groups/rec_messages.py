@@ -34,18 +34,24 @@ async def rec_re(message: types.Message):
 
 
 @dispatcher.message_handler(content_types='text', state=None)
-async def rec_rest(message: types.Message):
-    user_id = message.from_user.id
-    full_name = message.from_user.full_name
-    user_name = message.from_user.username
-    date_time = message.date
-    message_text = message.text
-    shema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
-    if await database.exists_schema(shema_name):
-        sql = f"""INSERT INTO {shema_name}.{config.MESSAGES_UNSTRUCT} 
-            (user_id, full_name, user_name, message_text, date_time)
-            VALUES ({user_id}, '{full_name}', '{user_name}', '{message_text}', '{date_time}')
-        """
-        await database.execute(sql, execute=True)
-    else:
-        pass
+async def delete_message(message: types.Message):
+    print(message.chat.id, message.message_id)
+    await message.delete()
+
+
+# @dispatcher.message_handler(content_types='text', state=None)
+# async def rec_rest(message: types.Message):
+#     user_id = message.from_user.id
+#     full_name = message.from_user.full_name
+#     user_name = message.from_user.username
+#     date_time = message.date
+#     message_text = message.text
+#     shema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
+#     if await database.exists_schema(shema_name):
+#         sql = f"""INSERT INTO {shema_name}.{config.MESSAGES_UNSTRUCT}
+#             (user_id, full_name, user_name, message_text, date_time)
+#             VALUES ({user_id}, '{full_name}', '{user_name}', '{message_text}', '{date_time}')
+#         """
+#         await database.execute(sql, execute=True)
+#     else:
+#         pass
