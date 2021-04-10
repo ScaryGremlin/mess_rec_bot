@@ -1,5 +1,5 @@
 import os
-
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -7,8 +7,8 @@ load_dotenv()
 # Token бота
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-# id администраторов бота
-admins = [
+# id владельцев бота
+owners = [
     139653633,
 ]
 
@@ -26,3 +26,11 @@ SCHEMA = 'schema_'
 MESSAGES_STRUCT = 'messages_struct'
 MESSAGES_UNSTRUCT = 'messages_unstruct'
 DICT_PROBLEMS = 'dict_problems'
+DICT_ADMINS = 'dict_admins'
+DICT_USERS = 'dict_users'
+
+# Паттерн @user_id
+PATTERN_ID = re.compile(r'[0-9]+')
+
+# Паттерн @user_name
+# PATTERN_USER_NAME = re.compile(r'@[a-zA-Z][a-zA-Z0-9\_]{4,}')

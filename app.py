@@ -2,16 +2,16 @@ from aiogram import executor
 
 from loader import database
 from loader import dispatcher
-from utils.notify_admins import on_startup_notify
+from utils.notify_owners import on_startup_notify
 from utils.set_bot_commands import set_default_commands
 import handlers
 
 
 async def on_startup(dispatcher):
     # Подключиться к базе данных
-    # await database.connect()
+    await database.connect()
 
-    # Уведомить администратора о запуске бота
+    # Уведомить владельца о запуске бота
     await on_startup_notify(dispatcher)
 
     # Установить команды

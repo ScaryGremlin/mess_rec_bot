@@ -57,7 +57,7 @@ class Database:
     async def create_table_dict_problems(self, schema_name, table_name):
         sql = f"""
             CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
-                id INT,
+                id INT PRIMARY KEY,
                 problem VARCHAR(255) NOT NULL
             );
         """
@@ -91,3 +91,37 @@ class Database:
             );
         """
         await self.execute(sql, execute=True)
+
+    async def create_table_users(self, schema_name, table_name):
+        sql = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+                user_id BIGINT PRIMARY KEY
+            );
+            """
+        await self.execute(sql, execute=True)
+
+    async def create_table_admins(self, schema_name, table_name):
+        sql = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+                admin_id BIGINT PRIMARY KEY
+            );
+            """
+        await self.execute(sql, execute=True)
+
+    async def exists_admin_in_dict(self, schema_name, table_name, admin_id):
+        sql = f"""
+            SELECT admin_id FROM {schema_name}.{table_name} WHERE admin_id = {admin_id};
+            """
+        if await self.execute(sql, fetchrow=True) is None:
+            return False
+        else:
+            return True
+
+    async def exists_user_in_dict(self, schema_name, table_name, user_id):
+        sql = f"""
+            SELECT user_id FROM {schema_name}.{table_name} WHERE user_id = {user_id};
+            """
+        if await self.execute(sql, fetchrow=True) is None:
+            return False
+        else:
+            return True
