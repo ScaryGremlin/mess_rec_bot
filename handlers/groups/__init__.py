@@ -1,6 +1,7 @@
 from .init import dispatcher
 from .description import dispatcher
 from .records import dispatcher
+from .add_admins import dispatcher
 from .add_users import dispatcher
 from .remove_users import dispatcher
 from .help import dispatcher

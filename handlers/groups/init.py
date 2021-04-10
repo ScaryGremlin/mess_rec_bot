@@ -21,4 +21,4 @@ async def bot_init(message: types.Message):
         else:
             await message.answer('Инициализация для этого чата уже произведена!')
     else:
-        await message.answer('Извините, но вы не администратор!')
+        await message.answer('Извините, но вы не админ!')
