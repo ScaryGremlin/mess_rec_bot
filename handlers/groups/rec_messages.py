@@ -33,10 +33,19 @@ async def rec_re(message: types.Message):
         pass
 
 
-@dispatcher.message_handler(content_types='text', state=None)
+@dispatcher.message_handler(content_types=types.ContentTypes.all(), state=None)
 async def delete_message(message: types.Message):
-    print(message.chat.id, message.message_id)
-    await message.delete()
+    schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
+    sql = f"""
+        SELECT admin_id FROM {schema_name}.{config.DICT_ADMINS} 
+            UNION SELECT user_id FROM {schema_name}.{config.DICT_USERS};
+    """
+    data = await database.execute(sql, fetch=True)
+    dict_admins_users = [dict(row) for row in data]
+    if not any(d['admin_id'] == message.from_user.id for d in dict_admins_users):
+        await message.delete()
+    else:
+        pass
 
 
 # @dispatcher.message_handler(content_types='text', state=None)
