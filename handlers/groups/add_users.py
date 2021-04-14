@@ -44,5 +44,8 @@ async def get_users_names(message: types.Message, state: FSMContext):
     message_report = ''
     for status in dict_statuses:
         message_report = message_report + f'<code>{status}</code> — {dict_statuses[status]} \n'
-    await message.answer(message_report)
+    if message_report:
+        await message.answer(message_report)
+    else:
+        await message.answer('В вашем сообщении не нашлось чего-то похожего на id, попробуйте ещё раз...')
     await state.finish()

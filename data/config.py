@@ -1,5 +1,6 @@
 import os
 import re
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -29,8 +30,5 @@ DICT_PROBLEMS = 'dict_problems'
 DICT_ADMINS = 'dict_admins'
 DICT_USERS = 'dict_users'
 
-# Паттерн @user_id
 PATTERN_ID = re.compile(r'[0-9]+')
-
-# Паттерн @user_name
-# PATTERN_USER_NAME = re.compile(r'@[a-zA-Z][a-zA-Z0-9\_]{4,}')
+PATTERN_PROBLEM = re.compile(r'[#]\d+[/][0-9а-яА-Яa-zA-ZёЁ\s+-]+[/][1-5]')
