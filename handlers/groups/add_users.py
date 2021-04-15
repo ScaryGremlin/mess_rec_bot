@@ -2,6 +2,7 @@ import re
 
 from aiogram import types
 from aiogram.dispatcher.filters import Command
+from aiogram.dispatcher.filters import ContentTypeFilter
 from aiogram.dispatcher.storage import FSMContext
 
 from data import config
@@ -24,7 +25,7 @@ async def add_users(message: types.Message):
                              'чтобы создать нужные таблицы в базе данных!')
 
 
-@dispatcher.message_handler(content_types='text', state=AddUsersQuestions.Q1)
+@dispatcher.message_handler(ContentTypeFilter(types.ContentType.TEXT), state=AddUsersQuestions.Q1)
 async def get_users_names(message: types.Message, state: FSMContext):
     message_text = re.findall(config.PATTERN_ID, message.text)
     dict_statuses = dict()

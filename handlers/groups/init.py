@@ -17,8 +17,8 @@ async def bot_init(message: types.Message):
             await database.create_table_unstruct(schema_name=schema_name, table_name=config.MESSAGES_UNSTRUCT)
             await database.create_table_admins(schema_name=schema_name, table_name=config.DICT_ADMINS)
             await database.create_table_users(schema_name=schema_name, table_name=config.DICT_USERS)
-            await message.answer('Запись в базу данных инициализирована, таблицы созданы.')
+            await message.answer('Таблицы базы данных созданы, запись журнала начата...')
         else:
-            await message.answer('Инициализация для этого чата уже произведена!')
+            await message.answer('Для этого чата журнал уже пишется!')
     else:
         await message.answer('Извините, но вы не админ!')

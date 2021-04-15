@@ -1,4 +1,5 @@
 from aiogram import types
+from aiogram.dispatcher.filters import ChatTypeFilter
 from aiogram.dispatcher.filters import Command
 
 from loader import dispatcher

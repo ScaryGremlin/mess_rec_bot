@@ -6,7 +6,7 @@ from loader import dispatcher
 
 @dispatcher.message_handler(CommandHelp())
 async def bot_help(message: types.Message):
-    await message.answer('/init — инициализация, начало записи в базу (доступна админам или владельцам); \n'
+    await message.answer('/init — начать ведение журнала сообщений (доступна админам или владельцам); \n'
                          '/description — инструкция о том, как оформлять сообщения, описание проблем '
                          '(доступна в личной переписке с ботом); \n'
                          '/records — запросить статистику по сообщениям (доступна админам или владельцам); \n'

@@ -5,4 +5,4 @@ from loader import dispatcher
 
 @dispatcher.message_handler(commands='records')
 async def bot_stat(message: types.Message):
-    await message.answer('Ты нажал на статистику')
+    await message.answer('Вы запросили статистику')

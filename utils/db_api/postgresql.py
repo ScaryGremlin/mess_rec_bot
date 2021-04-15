@@ -58,7 +58,7 @@ class Database:
         sql = f"""
             CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
                 id INT PRIMARY KEY,
-                problem VARCHAR(255) NOT NULL
+                problem VARCHAR(255)
             );
         """
         await self.execute(sql, execute=True)
@@ -67,11 +67,13 @@ class Database:
         sql = f"""
             CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
                 id SERIAL PRIMARY KEY,
+                message_id INT,
+                reply_id INT,
                 hub INT,
                 city VARCHAR(255),
                 number_problem INT,
-                user_id BIGINT NOT NULL,
-                full_name VARCHAR(255) NOT NULL,
+                user_id BIGINT,
+                full_name VARCHAR(255),
                 user_name VARCHAR(255) NULL,
                 message_text VARCHAR(255),
                 date_time TIMESTAMP
@@ -83,8 +85,10 @@ class Database:
         sql = f"""
             CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
                 id SERIAL PRIMARY KEY,
-                user_id BIGINT NOT NULL,
-                full_name VARCHAR(255) NOT NULL,
+                message_id INT,
+                reply_id INT,
+                user_id BIGINT,
+                full_name VARCHAR(255),
                 user_name VARCHAR(255) NULL,
                 message_text VARCHAR(255),
                 date_time TIMESTAMP
@@ -125,3 +129,11 @@ class Database:
             return False
         else:
             return True
+
+    async def get_list_admins_and_operators(self, schema_name):
+        sql = f"""
+                SELECT admin_id FROM {schema_name}.{config.DICT_ADMINS} 
+                    UNION SELECT user_id FROM {schema_name}.{config.DICT_USERS};
+            """
+        data = await self.execute(sql, fetch=True)
+        return [dict(row) for row in data]
