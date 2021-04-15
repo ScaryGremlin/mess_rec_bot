@@ -26,7 +26,7 @@ async def rec_re(message: types.Message):
     date_time = message.date
     shema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
     if await database.exists_schema(shema_name):
-        sql = f"""INSERT INTO {shema_name}.{config.MESSAGES_STRUCT} 
+        sql = f"""INSERT INTO {shema_name}.{config.TABLE_STRUCT_MESSAGES} 
             (message_id, reply_id, hub, city, number_problem, user_id, full_name, user_name, message_text, date_time)
             VALUES ({message_id}, {reply_id}, {hub}, '{city}', {number_problem}, {user_id}, '{full_name}', 
                 '{user_name}', '{message_text}', '{date_time}')
@@ -50,16 +50,17 @@ async def rec_rest(message: types.Message):
             reply_id = message.reply_to_message.message_id
         except:
             reply_id = 0
-        sql = f"""INSERT INTO {schema_name}.{config.MESSAGES_UNSTRUCT}
+        sql = f"""INSERT INTO {schema_name}.{config.TABLE_UNSTRUCT_MESSAGES}
             (message_id, reply_id, user_id, full_name, user_name, message_text, date_time)
             VALUES ({message_id}, {reply_id}, {user_id}, '{full_name}', '{user_name}', '{message_text}', '{date_time}')
         """
         await database.execute(sql, execute=True)
-        dict_admins_and_users = await database.get_list_admins_and_operators(schema_name)
-        if not any(d['admin_id'] == message.from_user.id for d in dict_admins_and_users):
+        dict_admins_and_operators = await database.get_list_admins_and_operators(schema_name)
+        if not any(d['admin_id'] == message.from_user.id for d in dict_admins_and_operators):
             message_from = message.from_user.full_name
-            await message.answer(
+            answer = await message.answer(
                 f'<code>{message_from}</code>, пишите, пожалуйста, сообщения в соответствии с правилами!')
+            await database.add_service_message(schema_name, answer.message_id)
             await message.delete()
         else:
             pass
@@ -74,8 +75,9 @@ async def delete_message(message: types.Message):
         dict_admins_and_users = await database.get_list_admins_and_operators(schema_name)
         if not any(d['admin_id'] == message.from_user.id for d in dict_admins_and_users):
             message_from = message.from_user.full_name
-            await message.answer(
+            answer = await message.answer(
                 f'<code>{message_from}</code>, пишите, пожалуйста, сообщения в соответствии с правилами!')
+            await database.add_service_message(schema_name, answer.message_id)
             await message.delete()
         else:
             pass

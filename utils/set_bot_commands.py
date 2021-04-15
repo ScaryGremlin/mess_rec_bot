@@ -13,4 +13,5 @@ async def set_default_commands(dispatcher):
         types.BotCommand('list_admins', 'список админов'),
         types.BotCommand('list_users', 'список операторов'),
         types.BotCommand('help', 'помощь по командам'),
+        types.BotCommand('delete', 'почистить сервисные сообщения'),
     ])

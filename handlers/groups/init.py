@@ -8,17 +8,20 @@ from loader import dispatcher
 
 @dispatcher.message_handler(Command('init'))
 async def bot_init(message: types.Message):
+    schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
     if message.from_user.id in config.owners:
-        schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
         if not await database.exists_schema(schema_name):
             await database.create_schema(schema_name)
-            await database.create_table_dict_problems(schema_name=schema_name, table_name=config.DICT_PROBLEMS)
-            await database.create_table_struct(schema_name=schema_name, table_name=config.MESSAGES_STRUCT)
-            await database.create_table_unstruct(schema_name=schema_name, table_name=config.MESSAGES_UNSTRUCT)
-            await database.create_table_admins(schema_name=schema_name, table_name=config.DICT_ADMINS)
-            await database.create_table_users(schema_name=schema_name, table_name=config.DICT_USERS)
-            await message.answer('Таблицы базы данных созданы, запись журнала начата...')
+            await database.create_table_dict_problems(schema_name)
+            await database.create_table_struct_messages(schema_name)
+            await database.create_table_unstruct_messages(schema_name)
+            await database.create_table_dict_admins(schema_name)
+            await database.create_table_dict_operators(schema_name)
+            await database.create_table_service_messages(schema_name)
+            answer = await message.answer('Таблицы базы данных созданы, запись журнала начата...')
         else:
-            await message.answer('Для этого чата журнал уже пишется!')
+            answer = await message.answer('Для этого чата журнал уже пишется!')
     else:
-        await message.answer('Извините, но вы не админ!')
+        answer = await message.answer('Извините, но вы не админ!')
+    await database.add_service_message(schema_name, message.message_id)
+    await database.add_service_message(schema_name, answer.message_id)

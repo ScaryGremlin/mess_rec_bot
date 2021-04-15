@@ -51,21 +51,22 @@ class Database:
 
     async def create_schema(self, schema_name):
         sql = f"""
-            CREATE SCHEMA IF NOT EXISTS {schema_name}"""
+            CREATE SCHEMA IF NOT EXISTS {schema_name}
+        """
         await self.execute(sql, execute=True)
 
-    async def create_table_dict_problems(self, schema_name, table_name):
+    async def create_table_dict_problems(self, schema_name):
         sql = f"""
-            CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+            CREATE TABLE IF NOT EXISTS {schema_name}.{config.TABLE_DICT_PROBLEMS} (
                 id INT PRIMARY KEY,
                 problem VARCHAR(255)
             );
         """
         await self.execute(sql, execute=True)
 
-    async def create_table_struct(self, schema_name, table_name):
+    async def create_table_struct_messages(self, schema_name):
         sql = f"""
-            CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+            CREATE TABLE IF NOT EXISTS {schema_name}.{config.TABLE_STRUCT_MESSAGES} (
                 id SERIAL PRIMARY KEY,
                 message_id INT,
                 reply_id INT,
@@ -81,9 +82,9 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
-    async def create_table_unstruct(self, schema_name, table_name):
+    async def create_table_unstruct_messages(self, schema_name):
         sql = f"""
-            CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+            CREATE TABLE IF NOT EXISTS {schema_name}.{config.TABLE_UNSTRUCT_MESSAGES} (
                 id SERIAL PRIMARY KEY,
                 message_id INT,
                 reply_id INT,
@@ -96,35 +97,43 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
-    async def create_table_users(self, schema_name, table_name):
+    async def create_table_dict_admins(self, schema_name):
         sql = f"""
-            CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
-                user_id BIGINT PRIMARY KEY
-            );
-            """
-        await self.execute(sql, execute=True)
-
-    async def create_table_admins(self, schema_name, table_name):
-        sql = f"""
-            CREATE TABLE IF NOT EXISTS {schema_name}.{table_name} (
+            CREATE TABLE IF NOT EXISTS {schema_name}.{config.TABLE_DICT_ADMINS} (
                 admin_id BIGINT PRIMARY KEY
             );
-            """
+        """
+        await self.execute(sql, execute=True)
+
+    async def create_table_dict_operators(self, schema_name):
+        sql = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.{config.TABLE_DICT_OPERATORS} (
+                operator_id BIGINT PRIMARY KEY
+            );
+        """
+        await self.execute(sql, execute=True)
+
+    async def create_table_service_messages(self, schema_name):
+        sql = f"""
+            CREATE TABLE IF NOT EXISTS {schema_name}.{config.TABLE_SERVICE_MESSAGES} (
+                message_id INT
+            );
+        """
         await self.execute(sql, execute=True)
 
     async def exists_admin_in_dict(self, schema_name, table_name, admin_id):
         sql = f"""
             SELECT admin_id FROM {schema_name}.{table_name} WHERE admin_id = {admin_id};
-            """
+        """
         if await self.execute(sql, fetchrow=True) is None:
             return False
         else:
             return True
 
-    async def exists_user_in_dict(self, schema_name, table_name, user_id):
+    async def exists_operator_in_dict(self, schema_name, table_name, operator_id):
         sql = f"""
-            SELECT user_id FROM {schema_name}.{table_name} WHERE user_id = {user_id};
-            """
+            SELECT operator_id FROM {schema_name}.{table_name} WHERE operator_id = {operator_id};
+        """
         if await self.execute(sql, fetchrow=True) is None:
             return False
         else:
@@ -132,8 +141,27 @@ class Database:
 
     async def get_list_admins_and_operators(self, schema_name):
         sql = f"""
-                SELECT admin_id FROM {schema_name}.{config.DICT_ADMINS} 
-                    UNION SELECT user_id FROM {schema_name}.{config.DICT_USERS};
-            """
+            SELECT admin_id FROM {schema_name}.{config.TABLE_DICT_ADMINS} 
+                UNION SELECT operator_id FROM {schema_name}.{config.TABLE_DICT_OPERATORS};
+        """
+        data = await self.execute(sql, fetch=True)
+        return [dict(row) for row in data]
+
+    async def add_service_message(self, schema_name, message_id):
+        sql = f"""
+            INSERT INTO {schema_name}.{config.TABLE_SERVICE_MESSAGES} (message_id) VALUES ({message_id});
+        """
+        await self.execute(sql, execute=True)
+
+    async def clear_table(self, schema_name, table_name):
+        sql = f"""
+            DELETE FROM {schema_name}.{table_name}
+        """
+        await self.execute(sql, execute=True)
+
+    async def get_messages_for_delete(self, schema_name):
+        sql = f"""
+            SELECT message_id FROM {schema_name}.{config.TABLE_SERVICE_MESSAGES}
+        """
         data = await self.execute(sql, fetch=True)
         return [dict(row) for row in data]

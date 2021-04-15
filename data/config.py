@@ -24,11 +24,12 @@ DB_PORT = os.getenv('DB_PORT')
 SCHEMA = 'schema_'
 
 # Имена таблиц
-MESSAGES_STRUCT = 'messages_struct'
-MESSAGES_UNSTRUCT = 'messages_unstruct'
-DICT_PROBLEMS = 'dict_problems'
-DICT_ADMINS = 'dict_admins'
-DICT_USERS = 'dict_users'
+TABLE_STRUCT_MESSAGES = 'struct_messages'
+TABLE_UNSTRUCT_MESSAGES = 'unstruct_messages'
+TABLE_DICT_PROBLEMS = 'dict_problems'
+TABLE_DICT_ADMINS = 'dict_admins'
+TABLE_DICT_OPERATORS = 'dict_operators'
+TABLE_SERVICE_MESSAGES = 'service_messages'
 
 PATTERN_ID = re.compile(r'[0-9]+')
 PATTERN_PROBLEM = re.compile(r'[#]\d+[/][0-9а-яА-Яa-zA-ZёЁ\s+-]+[/][1-5]')
