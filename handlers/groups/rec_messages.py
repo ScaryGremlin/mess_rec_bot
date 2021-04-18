@@ -24,9 +24,9 @@ async def rec_re(message: types.Message):
     user_name = message.from_user.username
     message_text = message.text
     date_time = message.date
-    shema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
-    if await database.exists_schema(shema_name):
-        sql = f"""INSERT INTO {shema_name}.{config.TABLE_STRUCT_MESSAGES} 
+    schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
+    if await database.exists_schema(schema_name):
+        sql = f"""INSERT INTO {schema_name}.{config.TABLE_STRUCT_MESSAGES} 
             (message_id, reply_id, hub, city, number_problem, user_id, full_name, user_name, message_text, date_time)
             VALUES ({message_id}, {reply_id}, {hub}, '{city}', {number_problem}, {user_id}, '{full_name}', 
                 '{user_name}', '{message_text}', '{date_time}')

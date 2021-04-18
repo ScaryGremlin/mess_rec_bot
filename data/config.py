@@ -10,7 +10,8 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 # id владельцев бота
 owners = [
-    139653633,
+    139653633, # @arthur_dzhemakulov
+
 ]
 
 # Данные подключения к базе данных postgresql
