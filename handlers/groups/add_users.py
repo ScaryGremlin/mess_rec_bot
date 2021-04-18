@@ -22,11 +22,11 @@ async def add_users(message: types.Message):
                                       'Можно передавать идентификаторы списком. \n'
                                       'Например, <code>911298894 129673633 890032481</code>.')
         await AddUsersQuestions.first()
+        await database.add_service_message(schema_name, message.message_id)
+        await database.add_service_message(schema_name, answer.message_id)
     else:
-        answer = await message.answer('Выполните, пожалуйста, сначала инициализацию для этого чата, '
-                                      'чтобы создать нужные таблицы в базе данных!')
-    await database.add_service_message(schema_name, message.message_id)
-    await database.add_service_message(schema_name, answer.message_id)
+        await message.answer('Начните, пожалуйста, сначала запись журнала для этого чата, '
+                             'чтобы создать необходимые таблицы в базе данных!')
 
 
 @dispatcher.message_handler(ContentTypeFilter(types.ContentType.TEXT), state=AddUsersQuestions.Q1)

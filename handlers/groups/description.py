@@ -32,5 +32,6 @@ async def bot_description(message: types.Message):
                                   'К примеру, сообщение \n'
                                   '<code># 250/Волгоград/ 4</code> оформлено не верно! \n'
                                   )
-    await database.add_service_message(schema_name, message.message_id)
-    await database.add_service_message(schema_name, answer.message_id)
+    if await database.exists_schema(schema_name):
+        await database.add_service_message(schema_name, message.message_id)
+        await database.add_service_message(schema_name, answer.message_id)

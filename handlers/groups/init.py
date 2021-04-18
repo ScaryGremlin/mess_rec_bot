@@ -23,5 +23,6 @@ async def bot_init(message: types.Message):
             answer = await message.answer('Для этого чата журнал уже пишется!')
     else:
         answer = await message.answer('Извините, но вы не админ!')
-    await database.add_service_message(schema_name, message.message_id)
-    await database.add_service_message(schema_name, answer.message_id)
+    if await database.exists_schema(schema_name):
+        await database.add_service_message(schema_name, message.message_id)
+        await database.add_service_message(schema_name, answer.message_id)
