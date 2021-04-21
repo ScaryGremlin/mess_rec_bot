@@ -97,14 +97,6 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
-    async def create_table_dict_admins(self, schema_name):
-        sql = f"""
-            CREATE TABLE IF NOT EXISTS {schema_name}.{config.TABLE_DICT_ADMINS} (
-                admin_id BIGINT PRIMARY KEY
-            );
-        """
-        await self.execute(sql, execute=True)
-
     async def create_table_dict_operators(self, schema_name):
         sql = f"""
             CREATE TABLE IF NOT EXISTS {schema_name}.{config.TABLE_DICT_OPERATORS} (
@@ -121,28 +113,18 @@ class Database:
         """
         await self.execute(sql, execute=True)
 
-    async def exists_admin_in_dict(self, schema_name, table_name, admin_id):
+    async def exists_operator_in_dict(self, schema_name, operator_id):
         sql = f"""
-            SELECT admin_id FROM {schema_name}.{table_name} WHERE admin_id = {admin_id};
+            SELECT operator_id FROM {schema_name}.{config.TABLE_DICT_OPERATORS} WHERE operator_id = {operator_id};
         """
         if await self.execute(sql, fetchrow=True) is None:
             return False
         else:
             return True
 
-    async def exists_operator_in_dict(self, schema_name, table_name, operator_id):
+    async def get_list_operators(self, schema_name):
         sql = f"""
-            SELECT operator_id FROM {schema_name}.{table_name} WHERE operator_id = {operator_id};
-        """
-        if await self.execute(sql, fetchrow=True) is None:
-            return False
-        else:
-            return True
-
-    async def get_list_admins_and_operators(self, schema_name):
-        sql = f"""
-            SELECT admin_id FROM {schema_name}.{config.TABLE_DICT_ADMINS} 
-                UNION SELECT operator_id FROM {schema_name}.{config.TABLE_DICT_OPERATORS};
+            SELECT operator_id FROM {schema_name}.{config.TABLE_DICT_OPERATORS} 
         """
         data = await self.execute(sql, fetch=True)
         return [dict(row) for row in data]

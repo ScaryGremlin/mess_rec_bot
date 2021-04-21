@@ -8,8 +8,8 @@ load_dotenv()
 # Token бота
 BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-# id владельцев бота
-owners = [
+# id админов
+bot_admins = [
     139653633, # @arthur_dzhemakulov
 
 ]
@@ -28,7 +28,6 @@ SCHEMA = 'schema_'
 TABLE_STRUCT_MESSAGES = 'struct_messages'
 TABLE_UNSTRUCT_MESSAGES = 'unstruct_messages'
 TABLE_DICT_PROBLEMS = 'dict_problems'
-TABLE_DICT_ADMINS = 'dict_admins'
 TABLE_DICT_OPERATORS = 'dict_operators'
 TABLE_SERVICE_MESSAGES = 'service_messages'
 

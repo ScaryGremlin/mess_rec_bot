@@ -2,7 +2,7 @@ from aiogram import executor
 
 from loader import database
 from loader import dispatcher
-from utils.notify_owners import on_startup_notify
+from utils.notify_bot_admins import on_startup_notify
 from utils.set_bot_commands import set_default_commands
 import handlers
 

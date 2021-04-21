@@ -9,13 +9,12 @@ from loader import dispatcher
 @dispatcher.message_handler(Command('init'))
 async def bot_init(message: types.Message):
     schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
-    if message.from_user.id in config.owners:
+    if message.from_user.id in config.bot_admins:
         if not await database.exists_schema(schema_name):
             await database.create_schema(schema_name)
             await database.create_table_dict_problems(schema_name)
             await database.create_table_struct_messages(schema_name)
             await database.create_table_unstruct_messages(schema_name)
-            await database.create_table_dict_admins(schema_name)
             await database.create_table_dict_operators(schema_name)
             await database.create_table_service_messages(schema_name)
             answer = await message.answer('Таблицы базы данных созданы, запись журнала начата...')
