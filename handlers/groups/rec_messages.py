@@ -5,7 +5,7 @@ from aiogram.dispatcher.filters import Regexp
 from data import config
 from loader import database
 from loader import dispatcher
-
+import emoji
 
 @dispatcher.message_handler(Regexp(config.PATTERN_PROBLEM))
 async def rec_re(message: types.Message):
@@ -58,8 +58,8 @@ async def rec_rest(message: types.Message):
         dict_operators = await database.get_list_operators(schema_name)
         if not any(d['operator_id'] == message.from_user.id for d in dict_operators):
             message_from = message.from_user.full_name
-            answer = await message.answer(
-                f'<code>{message_from}</code>, пишите, пожалуйста, сообщения в соответствии с правилами!')
+            answer = await message.answer(emoji.emojize(':warning: ') +
+                                          f'<code>{message_from}</code>, пишите, пожалуйста, сообщения в соответствии с правилами!')
             await database.add_service_message(schema_name, answer.message_id)
             await message.delete()
         else:
@@ -75,8 +75,9 @@ async def delete_message(message: types.Message):
         dict_operators = await database.get_list_operators(schema_name)
         if not any(d['operator_id'] == message.from_user.id for d in dict_operators):
             message_from = message.from_user.full_name
-            answer = await message.answer(
-                f'<code>{message_from}</code>, пишите, пожалуйста, сообщения в соответствии с правилами!')
+            answer = await message.answer(emoji.emojize(':warning: ') +
+                                          f'<code>{message_from}</code>, пишите, пожалуйста, '
+                                          f'сообщения в соответствии с правилами!')
             await database.add_service_message(schema_name, answer.message_id)
             await message.delete()
         else:

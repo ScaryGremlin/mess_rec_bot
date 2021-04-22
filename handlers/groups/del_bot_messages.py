@@ -1,3 +1,4 @@
+import emoji
 from aiogram import types
 from aiogram.dispatcher.filters import Command
 
@@ -17,5 +18,6 @@ async def del_message(message: types.Message):
             print(d['message_id'])
             await bot.delete_message(message.chat.id, d['message_id'])
     else:
-        await message.answer('Начните, пожалуйста, сначала запись журнала для этого чата, '
+        await message.answer(emoji.emojize(':warning: ') +
+                             'Начните, пожалуйста, сначала запись журнала для этого чата, '
                              'чтобы создать необходимые таблицы в базе данных!')
