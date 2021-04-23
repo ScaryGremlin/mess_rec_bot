@@ -60,7 +60,7 @@ async def rec_rest(message: types.Message):
         if not any(d['operator_id'] == message.from_user.id for d in dict_operators):
             message_from = message.from_user.full_name
             answer = await message.answer(emoji.emojize(':warning: ') +
-                                          f'<code>{message_from}</code>, пишите, пожалуйста, '
+                                          f'<code>{message_from}</code>, пожалуйста, пишите '
                                           f'сообщения в соответствии с правилами!')
             await database.add_service_message(schema_name, answer.message_id)
             await message.delete()
@@ -78,7 +78,7 @@ async def delete_message(message: types.Message):
         if not any(d['operator_id'] == message.from_user.id for d in dict_operators):
             message_from = message.from_user.full_name
             answer = await message.answer(emoji.emojize(':warning: ') +
-                                          f'<code>{message_from}</code>, пишите, пожалуйста, '
+                                          f'<code>{message_from}</code>, пожалуйста, пишите '
                                           f'сообщения в соответствии с правилами!')
             await database.add_service_message(schema_name, answer.message_id)
             await message.delete()

@@ -23,5 +23,5 @@ async def del_message(message: types.Message):
             await database.add_service_message(schema_name, answer.message_id)
     else:
         await message.answer(emoji.emojize(':warning: ') +
-                             'Начните, пожалуйста, сначала запись журнала для этого чата, '
+                             'Пожалуйста, начните сначала запись журнала для этого чата, '
                              'чтобы создать необходимые таблицы в базе данных!')
