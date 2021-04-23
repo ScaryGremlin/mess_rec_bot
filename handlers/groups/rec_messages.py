@@ -7,6 +7,7 @@ from loader import database
 from loader import dispatcher
 import emoji
 
+
 @dispatcher.message_handler(Regexp(config.PATTERN_PROBLEM))
 async def rec_re(message: types.Message):
     schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
@@ -59,7 +60,8 @@ async def rec_rest(message: types.Message):
         if not any(d['operator_id'] == message.from_user.id for d in dict_operators):
             message_from = message.from_user.full_name
             answer = await message.answer(emoji.emojize(':warning: ') +
-                                          f'<code>{message_from}</code>, пишите, пожалуйста, сообщения в соответствии с правилами!')
+                                          f'<code>{message_from}</code>, пишите, пожалуйста, '
+                                          f'сообщения в соответствии с правилами!')
             await database.add_service_message(schema_name, answer.message_id)
             await message.delete()
         else:

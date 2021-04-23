@@ -12,6 +12,7 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 bot_admins = [
     139653633, # @arthur_dzhemakulov
 
+
 ]
 
 # Данные подключения к базе данных postgresql
