@@ -14,8 +14,14 @@ from states import DelOperatorsQuestions
 
 @dispatcher.message_handler(Command('del_operators'))
 async def del_operators(message: types.Message):
+
+    # Имя схемы базы данных - schema_{chat_id}
     schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
+
+    # Если схема базы данных существует (если выполнена команда init)
     if await database.exists_schema(schema_name):
+
+        # Если сообщение от админов
         if message.from_user.id in config.bot_admins:
             answer = await message.answer('Пожалуйста, напишите, каких пользователей вы хотите исключить из '
                                           'списка операторов? \n'
@@ -26,8 +32,11 @@ async def del_operators(message: types.Message):
             await DelOperatorsQuestions.first()
         else:
             answer = await message.answer(emoji.emojize(':warning: ') + 'Извините, но вы не админ!')
+
+        # Записать сообщение от бота и команду пользователя в сервисную таблицу базы данных
         await database.add_service_message(schema_name, message.message_id)
         await database.add_service_message(schema_name, answer.message_id)
+
     else:
         await message.answer(emoji.emojize(':warning: ') +
                              'Пожалуйста, начните сначала запись журнала для этого чата, '
@@ -79,6 +88,7 @@ async def get_operators_names(message: types.Message, state: FSMContext):
         answer = await message.answer(emoji.emojize(':warning: ') +
                                       'В вашем сообщении не нашлось ничего похожего на id, попробуйте ещё раз...')
 
+    # Записать сообщение от бота и команду пользователя в сервисную таблицу базы данных
     await database.add_service_message(schema_name, message.message_id)
     await database.add_service_message(schema_name, answer.message_id)
 

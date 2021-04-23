@@ -31,5 +31,8 @@ TABLE_DICT_PROBLEMS = 'dict_problems'
 TABLE_DICT_OPERATORS = 'dict_operators'
 TABLE_SERVICE_MESSAGES = 'service_messages'
 
+# Шаблон id пользователя
 PATTERN_ID = re.compile(r'[0-9]+')
+
+# Шаблон сообщения о проблеме
 PATTERN_PROBLEM = re.compile(r'[#]\d+[/][0-9а-яА-Яa-zA-ZёЁ\s+-]+[/][1-5]')
