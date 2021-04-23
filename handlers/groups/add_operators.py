@@ -1,5 +1,6 @@
 import re
 
+import emoji
 from aiogram import types
 from aiogram.dispatcher.filters import Command
 from aiogram.dispatcher.filters import ContentTypeFilter
@@ -24,11 +25,12 @@ async def add_users(message: types.Message):
                                           'Например, <code>911298894 129673633 890032481</code>.')
             await AddOperatorsQuestions.first()
         else:
-            answer = await message.answer('Извините, но вы не админ!')
+            answer = await message.answer(emoji.emojize(':warning: ') + 'Извините, но вы не админ!')
         await database.add_service_message(schema_name, message.message_id)
         await database.add_service_message(schema_name, answer.message_id)
     else:
-        await message.answer('Начните, пожалуйста, сначала запись журнала для этого чата, '
+        await message.answer(emoji.emojize(':warning: ') +
+                             'Начните, пожалуйста, сначала запись журнала для этого чата, '
                              'чтобы создать необходимые таблицы в базе данных!')
 
 
@@ -55,7 +57,8 @@ async def get_users_names(message: types.Message, state: FSMContext):
     if message_report:
         answer = await message.answer(message_report)
     else:
-        answer = await message.answer('В вашем сообщении не нашлось чего-то похожего на id, попробуйте ещё раз...')
+        answer = await message.answer(emoji.emojize(':warning: ') +
+                                      'В вашем сообщении не нашлось чего-то похожего на id, попробуйте ещё раз...')
     await database.add_service_message(schema_name, message.message_id)
     await database.add_service_message(schema_name, answer.message_id)
     await state.finish()
