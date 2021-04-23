@@ -13,10 +13,14 @@ async def del_message(message: types.Message):
     schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
     if await database.exists_schema(schema_name):
         await database.add_service_message(schema_name, message.message_id)
-        dict_del_messages = await database.get_messages_for_delete(schema_name)
-        for d in dict_del_messages:
-            print(d['message_id'])
-            await bot.delete_message(message.chat.id, d['message_id'])
+        if message.from_user.id in config.bot_admins:
+            dict_del_messages = await database.get_messages_for_delete(schema_name)
+            for d in dict_del_messages:
+                print(d['message_id'])
+                await bot.delete_message(message.chat.id, d['message_id'])
+        else:
+            answer = await message.answer(emoji.emojize(':warning: ') + 'Извините, но вы не админ!')
+            await database.add_service_message(schema_name, answer.message_id)
     else:
         await message.answer(emoji.emojize(':warning: ') +
                              'Начните, пожалуйста, сначала запись журнала для этого чата, '
