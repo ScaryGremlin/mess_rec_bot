@@ -18,7 +18,7 @@ async def bot_init(message: types.Message):
             await database.create_table_unstruct_messages(schema_name)
             await database.create_table_dict_operators(schema_name)
             await database.create_table_service_messages(schema_name)
-            answer = await message.answer(emoji.emojize(':check mark: ') +
+            answer = await message.answer(emoji.emojize(':check_mark: ') +
                                           'Таблицы базы данных созданы, запись журнала начата...')
         else:
             answer = await message.answer(emoji.emojize(':information: ') +

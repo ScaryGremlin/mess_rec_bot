@@ -11,7 +11,7 @@ async def on_startup(dispatcher):
     # Подключиться к базе данных
     await database.connect()
 
-    # Уведомить владельцев о запуске бота
+    # Уведомить админов о запуске бота
     await on_startup_notify(dispatcher)
 
     # Установить команды

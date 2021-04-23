@@ -56,8 +56,8 @@ async def rec_rest(message: types.Message):
             VALUES ({message_id}, {reply_id}, {user_id}, '{full_name}', '{user_name}', '{message_text}', '{date_time}')
         """
         await database.execute(sql, execute=True)
-        dict_operators = await database.get_list_operators(schema_name)
-        if not any(d['operator_id'] == message.from_user.id for d in dict_operators):
+        list_of_dicts_operators = await database.get_list_operators(schema_name)
+        if not any(d['operator_id'] == message.from_user.id for d in list_of_dicts_operators):
             message_from = message.from_user.full_name
             answer = await message.answer(emoji.emojize(':warning: ') +
                                           f'<code>{message_from}</code>, пожалуйста, пишите '

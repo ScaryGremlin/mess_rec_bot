@@ -9,21 +9,21 @@ from aiogram.dispatcher.storage import FSMContext
 from data import config
 from loader import database
 from loader import dispatcher
-from states import AddOperatorsQuestions
+from states import DelOperatorsQuestions
 
 
-@dispatcher.message_handler(Command('add_operators'))
-async def add_operators(message: types.Message):
+@dispatcher.message_handler(Command('del_operators'))
+async def del_operators(message: types.Message):
     schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
     if await database.exists_schema(schema_name):
         if message.from_user.id in config.bot_admins:
-            answer = await message.answer('Пожалуйста, напишите, каких пользователей вы хотите добавить в '
-                                          'список операторов? \n'
+            answer = await message.answer('Пожалуйста, напишите, каких пользователей вы хотите исключить из '
+                                          'списка операторов? \n'
                                           'Передайте в ответном сообщении их <code>user_id</code> '
                                           '(уникальные идентификаторы). \n'
                                           'Можно передавать идентификаторы списком. \n'
                                           'Например, <code>911298894 129673633 890032481</code>.')
-            await AddOperatorsQuestions.first()
+            await DelOperatorsQuestions.first()
         else:
             answer = await message.answer(emoji.emojize(':warning: ') + 'Извините, но вы не админ!')
         await database.add_service_message(schema_name, message.message_id)
@@ -34,23 +34,42 @@ async def add_operators(message: types.Message):
                              'чтобы создать необходимые таблицы в базе данных!')
 
 
-@dispatcher.message_handler(ContentTypeFilter(types.ContentType.TEXT), state=AddOperatorsQuestions.Q1)
+@dispatcher.message_handler(ContentTypeFilter(types.ContentType.TEXT), state=DelOperatorsQuestions.Q1)
 async def get_operators_names(message: types.Message, state: FSMContext):
+
+    # Имя схемы базы данных - schema_{chat_id}
     schema_name = config.SCHEMA + str(message.chat.id).replace('-', '')
+
+    # Найти в сообщении всё, что похоже на id пользователя по шаблону регулярного выражения
     message_text = re.findall(config.PATTERN_ID, message.text)
+
+    # Словарь для формирования отчётного сообщения
     dict_statuses = dict()
+
+    # Пройтись по id операторов, выбранных из сообщения
     for operator_id in message_text:
-        try:
-            member_chat_info = await message.chat.get_member(operator_id)
-        except:
-            dict_statuses.update({operator_id: 'пользователя нет в этом чате или не существует'})
-        else:
-            if await database.exists_operator_in_dict(schema_name, operator_id):
-                dict_statuses.update({member_chat_info['user']['username']: 'уже есть в списке операторов чата'})
+
+        # Если id оператора есть в таблице, то удалить его, выполнив запрос в базу
+        if await database.exists_operator_in_dict(schema_name, operator_id):
+            sql = f"""
+                DELETE FROM {schema_name}.{config.TABLE_DICT_OPERATORS} WHERE operator_id = {operator_id};
+            """
+            await database.execute(sql, execute=True)
+
+            # Если пользователь с id состоит в чате, то записать в словарь
+            # отчётного сообщения его username, иначе записать id
+            try:
+                member_chat_info = await message.chat.get_member(operator_id)
+            except:
+                dict_statuses.update({operator_id: 'удалён из списка операторов чата'})
             else:
-                sql = f"""INSERT INTO {schema_name}.{config.TABLE_DICT_OPERATORS} VALUES ({operator_id});"""
-                await database.execute(sql, execute=True)
-                dict_statuses.update({member_chat_info['user']['username']: 'добавлен в список операторов чата'})
+                dict_statuses.update({member_chat_info['user']['username']: 'удалён из списка операторов чата'})
+
+        # Если id оператора нет в таблице, то записать в словарь соответствующий отчёт
+        else:
+            dict_statuses.update({operator_id: 'не состоит в списке операторов чата или не существует'})
+
+    # Сформировать отчётное сообщение
     message_report = ''
     for status in dict_statuses:
         message_report = message_report + f'<code>{status}</code> — {dict_statuses[status]} \n'
@@ -59,6 +78,8 @@ async def get_operators_names(message: types.Message, state: FSMContext):
     else:
         answer = await message.answer(emoji.emojize(':warning: ') +
                                       'В вашем сообщении не нашлось ничего похожего на id, попробуйте ещё раз...')
+
     await database.add_service_message(schema_name, message.message_id)
     await database.add_service_message(schema_name, answer.message_id)
+
     await state.finish()
